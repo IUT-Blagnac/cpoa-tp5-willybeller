@@ -158,7 +158,6 @@ public class CourseViewer extends JFrame implements ActionListener,
 		double total = 0.0;
 		for (int i = 0; i < data.length; i++) {
 			data[i] = sliders.elementAt(i).getValue();
-			System.out.println(data[i]);
 			total += data[i];
 		}
 		//if total == 0 nothing to draw

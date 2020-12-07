@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.util.Vector;
 
 import javax.swing.JPanel;
-
 import observer.CourseRecord;
 import observer.LayoutConstants;
 
@@ -15,14 +14,14 @@ import observer.LayoutConstants;
  * pattern.
  */
 @SuppressWarnings("serial")
-public class BarChartObserver extends JPanel implements Observer {
+public class PieChartObserver extends JPanel implements Observer {
 	/**
 	 * Creates a BarChartObserver object
 	 * 
 	 * @param data
 	 *            a CourseData object to observe
 	 */
-	public BarChartObserver(CourseData data) {
+	public PieChartObserver(CourseData data) {
 		data.attach(this);
 		this.courseData = data.getUpdate();
 		this.setPreferredSize(new Dimension(2 * LayoutConstants.xOffset
@@ -40,20 +39,28 @@ public class BarChartObserver extends JPanel implements Observer {
 	 */
 	public void paint(Graphics g) {
 		super.paint(g);
-		LayoutConstants.paintBarChartOutline(g, this.courseData.size());
+		int radius = 100;
+		
+		Integer[] data = new Integer[courseData.size()];
+
+		//first compute the total number of students
+		double total = 0.0;
+		for (int i = 0; i < data.length; i++) {
+			data[i] = courseData.get(i).getNumOfStudents();
+			total += data[i];
+		}
+		double startAngle = 0.0;
 		for (int i = 0; i < courseData.size(); i++) {
 			CourseRecord record = (CourseRecord) courseData.elementAt(i);
 			g.setColor(LayoutConstants.courseColours[i]);
-			g.fillRect(
+			double ratio = (data[i] / total) * 360.0;
+			g.fillArc(350, 50, 2 * radius, 2 * radius, (int) startAngle, (int) ratio);
+			startAngle += ratio;
+			g.drawString(courseData.get(i).getName(),
 					LayoutConstants.xOffset + (i + 1)
 							* LayoutConstants.barSpacing + i
 							* LayoutConstants.barWidth, LayoutConstants.yOffset
-							+ LayoutConstants.graphHeight
-							- LayoutConstants.barHeight
-							+ 2
-							* (LayoutConstants.maxValue - record
-									.getNumOfStudents()),
-					LayoutConstants.barWidth, 2 * record.getNumOfStudents());
+							+ LayoutConstants.graphHeight + 20);
 			g.setColor(LayoutConstants.courseColours[i]);
 			g.drawString(record.getName(),
 					LayoutConstants.xOffset + (i + 1)
