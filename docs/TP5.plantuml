@@ -1,0 +1,24 @@
+@startuml
+class CourseViewer [[java:observer.nonpattern.CourseViewer]] {
+	-JPanel sliderPanel
+	-JPanel coursePanel
+	-Vector<JSlider> sliders
+	-JScrollPane scrollPane
+	-JButton button
+	+CourseViewer()
+	+void addCourse(CourseRecord courseRecord)
+	+void paint(Graphics g)
+	+void actionPerformed(ActionEvent arg0)
+	+void stateChanged(ChangeEvent arg0)
+	+{static}void main(String[] args)
+}
+class JFrame [[java:javax.swing.JFrame]] {
+}
+JFrame <|-- CourseViewer
+interface ActionListener [[java:java.awt.event.ActionListener]] {
+}
+ActionListener <|.. CourseViewer
+interface ChangeListener [[java:javax.swing.event.ChangeListener]] {
+}
+ChangeListener <|.. CourseViewer
+@enduml
