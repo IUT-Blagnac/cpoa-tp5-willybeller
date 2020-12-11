@@ -40,7 +40,7 @@ public class CourseData extends Observable {
 		}
 		if (!alreadyExists)
 			this.courseData.addElement(courseRecord);
-		this.notifyObservers();
+		this.notifyObservers(this.courseData);
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class CourseData extends Observable {
 				i = courseData.size();
 			}
 		}
-		this.notifyObservers();
+		this.notifyObservers(courseData.clone());
 	}
 
 	/**

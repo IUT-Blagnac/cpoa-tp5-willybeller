@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.util.Vector;
 
 import javax.swing.JPanel;
+
 import observer.CourseRecord;
 import observer.LayoutConstants;
 
@@ -14,14 +15,14 @@ import observer.LayoutConstants;
  * pattern.
  */
 @SuppressWarnings("serial")
-public class PieChartObserver extends JPanel implements Observer {
+public class BarChartObserver extends JPanel implements Observer {
 	/**
 	 * Creates a BarChartObserver object
 	 * 
 	 * @param data
 	 *            a CourseData object to observe
 	 */
-	public PieChartObserver(CourseData data) {
+	public BarChartObserver(CourseData data) {
 		data.attach(this);
 		this.courseData = data.getUpdate();
 		this.setPreferredSize(new Dimension(2 * LayoutConstants.xOffset
@@ -39,28 +40,20 @@ public class PieChartObserver extends JPanel implements Observer {
 	 */
 	public void paint(Graphics g) {
 		super.paint(g);
-		int radius = 100;
-		
-		Integer[] data = new Integer[courseData.size()];
-
-		//first compute the total number of students
-		double total = 0.0;
-		for (int i = 0; i < data.length; i++) {
-			data[i] = courseData.get(i).getNumOfStudents();
-			total += data[i];
-		}
-		double startAngle = 0.0;
+		LayoutConstants.paintBarChartOutline(g, this.courseData.size());
 		for (int i = 0; i < courseData.size(); i++) {
 			CourseRecord record = (CourseRecord) courseData.elementAt(i);
 			g.setColor(LayoutConstants.courseColours[i]);
-			double ratio = (data[i] / total) * 360.0;
-			g.fillArc(350, 50, 2 * radius, 2 * radius, (int) startAngle, (int) ratio);
-			startAngle += ratio;
-			g.drawString(courseData.get(i).getName(),
+			g.fillRect(
 					LayoutConstants.xOffset + (i + 1)
 							* LayoutConstants.barSpacing + i
 							* LayoutConstants.barWidth, LayoutConstants.yOffset
-							+ LayoutConstants.graphHeight + 20);
+							+ LayoutConstants.graphHeight
+							- LayoutConstants.barHeight
+							+ 2
+							* (LayoutConstants.maxValue - record
+									.getNumOfStudents()),
+					LayoutConstants.barWidth, 2 * record.getNumOfStudents());
 			g.setColor(LayoutConstants.courseColours[i]);
 			g.drawString(record.getName(),
 					LayoutConstants.xOffset + (i + 1)
@@ -84,6 +77,23 @@ public class PieChartObserver extends JPanel implements Observer {
 				+ (LayoutConstants.barSpacing + LayoutConstants.barWidth)
 				* this.courseData.size(), LayoutConstants.graphHeight + 2
 				* LayoutConstants.yOffset));
+		this.revalidate();
+		this.repaint();
+	}
+	
+	/**
+	 * Informs this observer that the observed CourseData object has changed
+	 *
+	 * @param o the observed CourseData object that has changed
+	 */
+	public void update(Object o) {
+		this.courseData = (Vector<CourseRecord>) o;
+
+		this.setPreferredSize(new Dimension(2 * LayoutConstants.xOffset
+				+ (LayoutConstants.barSpacing + LayoutConstants.barWidth)
+				* this.courseData.size(), LayoutConstants.graphHeight + 2
+				* LayoutConstants.yOffset));
+
 		this.revalidate();
 		this.repaint();
 	}
