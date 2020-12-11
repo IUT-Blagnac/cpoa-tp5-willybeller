@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -26,6 +27,9 @@ import observer.CourseRecord;
  */
 @SuppressWarnings("serial")
 public class CourseController extends JPanel implements Observer, ChangeListener, ActionListener {
+	
+	ArrayList<ObserverType> Types = new ArrayList<>();
+	
 	/**
 	 * Constructs a CourseController object
 	 * 
@@ -44,6 +48,8 @@ public class CourseController extends JPanel implements Observer, ChangeListener
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
+		Types.add(ObserverType.CREATE);
+		Types.add(ObserverType.REMOVE);
 		courses.attach(this);
 		Vector<CourseRecord> state = courses.getUpdate();
 
@@ -119,6 +125,11 @@ public class CourseController extends JPanel implements Observer, ChangeListener
 				return;
 
 		this.addCourse(record);
+	}
+	
+	@Override
+	public ArrayList<ObserverType> getTypes() {
+		return Types;
 	}
 
 	/**
